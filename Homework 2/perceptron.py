@@ -88,7 +88,7 @@ class MLP:
         for datapoint in range(input_dataset.shape[0]):
             self.forward_step(input_dataset[datapoint])
             self.backprop_step(label_xor[datapoint])
-            error += (label_xor[datapoint] - self.output)
+            error += (label_xor[datapoint] - self.output)**2
             output = -1
             if self.output >= 0.5:
                 output = 1
@@ -105,7 +105,7 @@ class MLP:
         elapsed = (time.time() - self.start)
         
         
-        return [outputs, elapsed, epoch, self.accuracies[-1], self.loss[-1]]
+        return [outputs, elapsed, epoch + 1, self.accuracies[-1], self.loss[-1]]
 
 
 
