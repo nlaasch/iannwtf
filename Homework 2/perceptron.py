@@ -111,42 +111,13 @@ class MLP:
 
 
 
-# plotting function for average loss and accuracy
-def plot(epochs, loss, accuracy):
-    fig, (ax1, ax2) = plt.subplots(2,1,figsize = (14,12))
-
-    fig.suptitle("Evolution of networks prediction", fontsize=16)
-    ax1.set(
-        title= "Average loss per epoch",
-        xlabel= "Epoch",
-        ylabel= "Loss",
-        # ylim=(0,1)
-    )
-    ax2.set(
-        title= "Average accuracy per epoch",
-        xlabel= "Epoch",
-        ylabel= "Accuracy",
-        ylim=(0,1)
-    )
-    ax1.plot(epochs, loss)
-    ax2.plot(epochs, accuracy)
-    plt.show()
-
-
 
 if __name__ == "__main__":
 
     mlp = MLP()
     training_output = None
-    loss = []
-    accuracy = []
-    epochs = []
+
 
     for epoch in range(10000):
         training_output = mlp.train(epoch)
-        loss.append(training_output[4])
-        epochs.append(training_output[2])
-        accuracy.append(training_output[3])
-        # print(training_output)
-
-    plot(epochs, loss, accuracy)
+        print(training_output)
