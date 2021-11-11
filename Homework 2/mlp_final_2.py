@@ -1,6 +1,4 @@
 import numpy as np
-#import random
-from homework2 import sigmoid, sigmoidprime, generate_data
 from matplotlib import pyplot as plt
 import time
 
@@ -16,6 +14,22 @@ label_or = np.array([0,1,1,1])
 label_nand = np.array([1,1,1,0])
 label_nor = np.array([1,0,0,0])
 label_xor = np.array([0,1,1,0])
+
+
+
+
+def sigmoid(x): 
+    """
+    Sigmoid activation function
+    """
+    return 1 / (1 + np.exp(-x))
+
+
+def sigmoidprime(x): 
+    """
+    Derivative of Sigmoid activation function
+    """
+    return sigmoid(x)*(1-sigmoid(x))
 
 
 
@@ -91,7 +105,8 @@ class Perceptron:
 class MLP:
     """
     Contains multiple "layers" of perceptron objects.
-    Passes inputs through the network and computes the error-signal with backpropagation
+    Passes inputs through the network and computes the error-signal with backpropagation.
+    Also trains the network
     """
 
 
@@ -127,6 +142,7 @@ class MLP:
         # Pass hl output to output layer
         self.output = self.outputneuron.forward_step(calculated)
 
+
     def backprop_step(self, target):
         """
         Compute error-signal with backpropagation.
@@ -141,14 +157,11 @@ class MLP:
         # Updates neuron in output layer
         self.outputneuron.update(delta)
 
-
         for perceptron in self.hiddenlayer:
             #Calculate hidden delta
             delta_hidden =  delta * self.outputneuron.weights[self.hiddenlayer.index(perceptron)] * sigmoidprime(perceptron.drive)
             #Update current perceptron with hidden delta
             perceptron.update(delta_hidden)
-
-
 
 
     def train(self, epoch):
@@ -159,47 +172,68 @@ class MLP:
         epoch(int): Training repetitions.
         """
 
-        #Loss
+        # Variables for loss
         error = 0
         outputs = []
 
 
-        # Trains network
+        # Iterates over input
         for datapoint in range(input_dataset.shape[0]):
+
+            # Performs forward and backward step for each datapoint in input
             self.forward_step(input_dataset[datapoint])
             self.backprop_step(label_xor[datapoint])
+            
+            # Computes Mean Squared Error
             error += (label_xor[datapoint] - self.output)**2
+
+            # Loss
             output = -1
+
+            # Network output >1 is enough to be classified as TRUE
             if self.output >= 0.5:
                 output = 1
             else:
                 output = 0
+
+            # Keeps track of effiency
             if (output == label_xor[datapoint]):
                 self.accuracy_sum += 1
+
+            # Save network output
             outputs.append(output)
+
 
         # Measure performance
         self.accuracies.append(round(self.accuracy_sum/((epoch * 4) + 1), 4))
         self.loss.append(error)
         elapsed = (time.time() - self.start)
 
-        # Output
+        # Contains all valueable information to evaluate network performance
         return [outputs, elapsed, epoch + 1, self.accuracies[-1], self.loss[-1]]
+
 
 
 
 def plot(epochs, loss, accuracy):
     """
-    Plots output
+    Creates plots for given lists.
+
+    Parameters:
+    loss(list): Error of the network.
+    accuracy(list): Accuracy of the network. 
+
     """
+
+    # Both plots in one figure
     fig, (ax1, ax2) = plt.subplots(2,1,figsize = (14,12))
 
+    # Set titles
     fig.suptitle("Evolution of networks prediction", fontsize=16)
     ax1.set(
         title= "Average loss per epoch",
         xlabel= "Epoch",
         ylabel= "Loss",
-        # ylim=(0,1)
     )
     ax2.set(
         title= "Average accuracy per epoch",
@@ -207,27 +241,38 @@ def plot(epochs, loss, accuracy):
         ylabel= "Accuracy",
         ylim=(0,1)
     )
+
+    # Feed data into plots
     ax1.plot(epochs, loss)
     ax2.plot(epochs, accuracy)
+
+    # Start plotting
     plt.show()
 
 
+
+
 # Runs the network
+# Check wether library or program
 if __name__ == "__main__":
 
-
+    # Create MLP object
     mlp = MLP()
-    training_output = None
 
+    # Store performance for plotting
     loss = []
     accuracy = []
     epochs = []
 
+    # Iterate training steps
     for epoch in range(10000):
+        # One training step (starts the magic)
         training_output = mlp.train(epoch)
+
+        # Keep track of performance
         loss.append(training_output[4])
         epochs.append(epoch)
         accuracy.append(training_output[3])
-        # print(training_output)
 
+    # Once trained, plot results
     plot(epochs, loss, accuracy)
