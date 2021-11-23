@@ -1,0 +1,14 @@
+Mean Time per Epoch: 2.25728976726532! With Parameters: 
+Batch size: 1024  Prefetch size: 1024  Buffer size: 1024
+
+Mean Time per Epoch: 2.18! With Parameters: 
+Batch size: 2048  Prefetch size: 2048  Buffer size: 2048
+
+Mean Time per Epoch: 2.27! With Parameters: 
+Batch size: 1000  Prefetch size: 1000  Buffer size: 1000
+
+Mean Time per Epoch: 2.08! With Parameters: 
+Batch size: 4096  Prefetch size: 4096  Buffer size: 1000
+
+Mean Time per Epoch: 2.02! With Parameters: 
+Batch size: 4096  Prefetch size: 2048  Buffer size: 1024
